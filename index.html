@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sangh — Mountain Valley Meditation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Georgia', serif; background: #0b1d1a; }
+    .parallax {
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    .fade-in { animation: fadeIn 2s ease forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    .drift { animation: drift 12s ease-in-out infinite alternate; }
+    @keyframes drift { from { transform: translateY(0); } to { transform: translateY(-18px); } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function MountainScene({ title, subtitle, bg, children }) {
+      return (
+        <section
+          className="parallax min-h-screen flex flex-col items-center justify-center text-center px-6 py-24 relative"
+          style={{ backgroundImage: `url('${bg}')` }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-[#0b1d1a]/90" />
+          <div className="relative z-10 fade-in max-w-3xl">
+            <h1 className="text-5xl md:text-7xl font-light text-emerald-50 tracking-wide mb-4 drop-shadow-lg">
+              {title}
+            </h1>
+            <p className="text-lg md:text-2xl text-emerald-100/80 italic mb-8">{subtitle}</p>
+            {children}
+          </div>
+        </section>
+      );
+    }
+
+    function BreathCircle() {
+      const [phase, setPhase] = useState("Breathe In");
+      useEffect(() => {
+        const seq = ["Breathe In", "Hold", "Breathe Out", "Hold"];
+        let i = 0;
+        const t = setInterval(() => {
+          i = (i + 1) % seq.length;
+          setPhase(seq[i]);
+        }, 4000);
+        return () => clearInterval(t);
+      }, []);
+      return (
+        <div className="flex flex-col items-center gap-6 mt-4">
+          <div className="relative w-48 h-48 flex items-center justify-center">
+            <div className="absolute inset-0 rounded-full bg-emerald-400/20 drift" />
+            <div className="absolute inset-6 rounded-full bg-emerald-300/30 drift" style={{ animationDelay: '1s' }} />
+            <div className="absolute inset-12 rounded-full bg-emerald-200/40 drift" style={{ animationDelay: '2s' }} />
+            <span className="relative text-emerald-50 text-xl font-light tracking-widest">{phase}</span>
+          </div>
+          <p className="text-emerald-100/60 text-sm tracking-widest uppercase">Follow the breath</p>
+        </div>
+      );
+    }
+
+    function Quote({ text, author }) {
+      return (
+        <div className="my-24 px-6 max-w-2xl mx-auto text-center">
+          <p className="text-2xl md:text-3xl text-emerald-100/90 font-light leading-relaxed italic">"{text}"</p>
+          <p className="mt-4 text-emerald-400/70 tracking-widest uppercase text-xs">— {author}</p>
+        </div>
+      );
+    }
+
+    function App() {
+      const peaks = "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=2000&q=80";
+      const valley = "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2000&q=80";
+      const mist = "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=2000&q=80";
+
+      return (
+        <div className="bg-[#0b1d1a]">
+          <MountainScene title="Sangh" subtitle="Stillness at the summit of the self" bg={peaks}>
+            <BreathCircle />
+          </MountainScene>
+
+          <Quote
+            text="The mountain does not hurry, yet it shapes the sky."
+            author="Valley Wisdom"
+          />
+
+          <MountainScene title="The Valley" subtitle="Descend into quiet presence" bg={valley}>
+            <a href="#meditate" className="inline-block mt-6 px-10 py-3 border border-emerald-200/50 text-emerald-50 tracking-widest uppercase text-sm hover:bg-emerald-200/10 transition">
+              Begin
+            </a>
+          </MountainScene>
+
+          <section id="meditate" className="parallax min-h-screen flex flex-col items-center justify-center text-center px-6 relative" style={{ backgroundImage: `url('${mist}')` }}>
+            <div className="absolute inset-0 bg-[#0b1d1a]/80" />
+            <div className="relative z-10 max-w-2xl">
+              <h2 className="text-4xl md:text-5xl font-light text-emerald-50 mb-6">Sit. Breathe. Be.</h2>
+              <p className="text-emerald-100/70 text-lg leading-relaxed mb-8">
+                You are the still point in the turning world. Let the mountains hold you.
+              </p>
+              <BreathCircle />
+            </div>
+          </section>
+
+          <footer className="py-16 text-center text-emerald-100/40 text-sm tracking-widest">
+            SANGH · MOUNTAIN VALLEY MEDITATION
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
